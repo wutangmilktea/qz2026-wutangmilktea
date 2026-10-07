@@ -163,8 +163,7 @@
 
 ### 答案
 
-（在此填写，格式：`1. A  2. B  3. C  4. D  5. A  6. B  7. C  8. D  9. A  10. B`）
-
+`1. B  2. B  3. B  4. B  5. B  6. B  7. B  8. B  9. B  10. B`
 ---
 
 ## 二、简答题（每题 10 分，共 3 题，满分 30 分）
@@ -182,7 +181,10 @@ import copy
 c = copy.deepcopy(a)
 ```
 
-（在此作答）
+答：b为a的浅拷贝，直接复用a的值；c为a的深拷贝，基于a重新创建一份完全独立的新副本
+执行a[0].append(99)后
+b = [[1, 2, 99], [3, 4]]
+c = [[1, 2], [3, 4]]
 
 ### 第 2 题：字典与列表的综合应用
 
@@ -202,7 +204,17 @@ logs = [
 2. 写出表达式，统计每个用户出现了几次（返回字典，键为用户名，值为次数）。
 3. 解释为什么第 2 问不能直接用 `len(logs)` 得到结果，需要什么遍历结构？
 
-（在此作答）
+答：
+1.`error_logs = [log for log in logs if log["level"] == "ERROR"]`
+2.
+```python
+user_count = {}
+for log in logs:
+    username = log["user"]
+    user_count[username] = user_count.get(username, 0) + 1
+```
+3.解释：len(logs)只能拿到整个日志列表的总条数，它没有做按用户名分组聚合的逻辑，无法区分不同用户各自的出现频次并得到按用户维度拆分的统计结果。
+需要用单层for循环遍历整个logs列表，同时搭配一个空字典作为累加容器
 
 ### 第 3 题：异常处理设计
 
@@ -217,4 +229,14 @@ Day_10 中你写过 `safe_int(s)` 函数：能转就返回整数，不能转就�
 
 请写出函数代码，并说明：为什么这里用 `try/except` 比先用 `if` 判断再计算更好？
 
-（在此作答）
+答：
+```python
+def safe_divide(a:str, b:str) -> float|None:
+    try:
+        a = float(a)
+        b = float(b)
+        return a / b
+    except (ZeroDivisionError, ValueError):
+        return None
+```
+说明：靠if条件很难穷举所有非法输入，且会使代码冗余，易漏掉边缘情况；而try/except直接依赖Python解释器本身的类型转换校验逻辑，不会出现漏判的情况，且能一次性覆盖两类异常场景，运行效率和可读性更高
